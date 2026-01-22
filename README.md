@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ShopNext - Premium E-commerce Frontend
 
-## Getting Started
+A modern, responsive e-commerce frontend application built with **Next.js 16**, **React 19**, and **Tailwind CSS v4**. This project demonstrates a clean architecture for building online stores, integrating with the public FakeStoreAPI for data.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Modern UI/UX**: Clean, responsive design with a focus on user experience.
+- **Client-Side Data Fetching**: Utilizes `useEffect` and `useState` for dynamic data updates on the client side.
+- **Product Filtering & Sorting**: Real-time search by title/category and sorting by price or rating.
+- **Dynamic Routing**: Individual product details pages using Next.js App Router dynamic segments.
+- **Responsive Layout**: Mobile-first design that adapts gracefully to all screen sizes.
+- **Loading & Error States**: Robust handling of asynchronous states for a smooth user journey.
+
+## 🛠 Tech Stack
+
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **Library**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Data Source**: [FakeStoreAPI](https://fakestoreapi.com/)
+- **Font**: Geist Sans & Mono
+
+## 📂 Project Structure
+
+```
+ecommerce/
+├── app/
+│   ├── layout.js          # Root layout (Navbar, Footer, Fonts)
+│   ├── page.js            # Landing Page (Client Component)
+│   ├── loading.js         # Global Loading UI
+│   ├── error.js           # Global Error UI
+│   └── products/
+│       ├── page.js        # Product Listing Page (Client Component)
+│       └── [id]/
+│           └── page.js    # Product Details Page (Client Component)
+├── components/
+│   ├── Navbar.jsx         # Main Navigation
+│   ├── Footer.jsx         # Site Footer
+│   ├── ProductCard.jsx    # Individual Product UI
+│   ├── ProductList.jsx    # Filter/Sort Logic Wrapper
+│   └── SearchBar.jsx      # Search & Sort Inputs
+└── public/                # Static assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⚡ Getting Started
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/vipul156/ShopNext.git
+    cd ShopNext
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-## Learn More
+3.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+4.  **Open in browser:**
+    Navigate to [http://localhost:3000](http://localhost:3000)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔄 Data Fetching Strategy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project primarily uses **Client-Side Rendering (CSR)** for data fetching.
+- **`useEffect` Hook**: Used in `page.js`, `products/page.js`, and `products/[id]/page.js` to fetch data from the API after the component mounts.
+- **Loading States**: Skeletons and spinners are displayed while data is being retrieved.
+- **Rationale**: Provides immediate interactivity and simplifies the transition for developers familiar with standard React patterns, while acting as a foundation for future server-side optimization if needed.
 
-## Deploy on Vercel
+## 🤝 Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
