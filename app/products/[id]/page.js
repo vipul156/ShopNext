@@ -1,42 +1,50 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { useParams, notFound } from 'next/navigation';
 
-async function getProduct(id) {
-    const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
-        next: { revalidate: 3600 }
-    });
+export default function ProductPage() {
+    const params = useParams();
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
-    if (!res.ok) {
-        if (res.status === 404) return null;
-        throw new Error('Failed to fetch product');
-    }
+    useEffect(() => {
+        if (!params?.id) return;
 
-    return res.json();
-}
-
-export async function generateMetadata({ params }) {
-    const resolvedParams = await params;
-    const product = await getProduct(resolvedParams.id);
-
-    if (!product) {
-        return {
-            title: 'Product Not Found',
+        const fetchProduct = async () => {
+            try {
+                const res = await fetch(`https://fakestoreapi.com/products/${params.id}`);
+                if (!res.ok) throw new Error('Failed to fetch');
+                const data = await res.json();
+                setProduct(data);
+            } catch (err) {
+                setError(true);
+            } finally {
+                setLoading(false);
+            }
         };
+
+        fetchProduct();
+    }, [params.id]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[50vh]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        );
     }
 
-    return {
-        title: `${product.title} - ShopNext`,
-        description: product.description.slice(0, 160),
-    };
-}
-
-export default async function ProductPage({ params }) {
-    const resolvedParams = await params; // Await params in newer Next.js versions if needed, or structured safely
-    const product = await getProduct(resolvedParams.id);
-
-    if (!product) {
-        notFound();
+    if (error || !product) {
+        return (
+            <div className="text-center py-20">
+                <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
+                <Link href="/products" className="text-blue-600 hover:underline">Back to Products</Link>
+            </div>
+        );
     }
 
     return (

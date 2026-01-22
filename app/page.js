@@ -1,17 +1,32 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
-async function getFeaturedProducts() {
-  try {
-    const res = await fetch('https://fakestoreapi.com/products?limit=4');
-    return res.json();
-  } catch (error) {
-    return [];
-  }
-}
+export default function Home() {
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-export default async function Home() {
-  const featuredProducts = await getFeaturedProducts();
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const res = await fetch('https://fakestoreapi.com/products?limit=4');
+        const data = await res.json();
+        /* 
+           FakeStoreAPI might return 4 items, but just in case, we splice or rely on limit param.
+           The limit param ?limit=4 works for this API.
+        */
+        setFeaturedProducts(data);
+      } catch (error) {
+        console.error("Failed to fetch featured products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeatured();
+  }, []);
 
   return (
     <div>
@@ -53,25 +68,37 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            {featuredProducts.map((product) => (
-              <div key={product.id} className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="relative h-48 w-full mb-4">
-                  <Image
-                    src={product.image}
-                    alt={product.title}
-                    fill
-                    className="object-contain"
-                  />
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm h-80 animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
                 </div>
-                <h3 className="font-bold text-gray-900 dark:text-white truncate">{product.title}</h3>
-                <p className="text-blue-600 font-semibold mt-2">${product.price}</p>
-                <Link href={`/products/${product.id}`} className="mt-4 block text-center text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                  View Details &rarr;
-                </Link>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+              {featuredProducts.map((product) => (
+                <div key={product.id} className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="relative h-48 w-full mb-4">
+                    <Image
+                      src={product.image}
+                      alt={product.title}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <h3 className="font-bold text-gray-900 dark:text-white truncate">{product.title}</h3>
+                  <p className="text-blue-600 font-semibold mt-2">${product.price}</p>
+                  <Link href={`/products/${product.id}`} className="mt-4 block text-center text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                    View Details &rarr;
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="text-center mt-12">
             <Link href="/products" className="inline-flex items-center font-semibold text-blue-600 hover:text-blue-500">
